@@ -86,6 +86,20 @@ export async function createMeal(
     items,
   } = req.body;
 
+  if (!eatTime) {
+  return res.status(400).json({
+    error: "Informe a data e o horário da refeição.",
+  });
+}
+
+const parsedEatTime = new Date(eatTime);
+
+if (Number.isNaN(parsedEatTime.getTime())) {
+  return res.status(400).json({
+    error: "Data e horário inválidos.",
+  });
+}
+
   const meal = await prisma.$transaction(
     async (tx) => {
       // Busca os alimentos envolvidos
@@ -112,7 +126,7 @@ export async function createMeal(
       const meal = await tx.meal.create({
         data: {
           type,
-          eatTime: new Date(eatTime),
+          eatTime: parsedEatTime,
           description,
           userId,
         },
