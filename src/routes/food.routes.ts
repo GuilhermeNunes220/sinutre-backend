@@ -12,6 +12,7 @@ foodRouter.get('/', requireAuth, async (req, res) => {
       userId: req.userId!,
       name: {
         contains: search,
+        mode: "insensitive",
       }
     },
     take: 10,
